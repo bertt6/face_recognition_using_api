@@ -43,36 +43,10 @@ app.get('/intra42', async (req, res) => {
           code: code,
           redirect_uri: 'http://134.122.73.103:3000/intra42',
      });
-     const data = await axios.get('https://api.intra.42.fr/v2/me', {
+     const data = await axios.get('https://api.intra.42.fr/v2/campus/49/users', {
           headers: { Authorization: `Bearer ${response.data.access_token}` },
      });
-     console.log(data.data);
-     
-     const data_1 = await axios.get('https://api.intra.42.fr/v2/me', {
-          headers: { Authorization: `Bearer ${response.data.access_token}` },
-     });
-
-     const photoDirectory = '/root/backend/photos';
-     if (!fs.existsSync(photoDirectory)) {
-          fs.mkdirSync(photoDirectory);
-     }
-
-     for (const user of data_1.data) {
-          if (user['active?'] === true && user.image && user.image.link) {
-              const fileName = `${user.login}.jpg`;
-              const filePath = `${photoDirectory}/${fileName}`;
-      
-              try {
-                  const response = await axios.get(user.image.link, { responseType: 'stream' });
-                  response.data.pipe(fs.createWriteStream(filePath));
-                  console.log(`Fotoğraf indirildi: ${filePath}`);
-              } catch (error) {
-                  console.error(`Fotoğraf indirilirken hata oluştu: ${error}`);
-              }
-          }
-      }
-      console.log(data.data.image)
-     
+     console.log(data.data[5].image);
      res.send({ status: 200, message: "Basarili" });
 });
 
