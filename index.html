@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>HAVA DURUMU</title>
+     <link rel="stylesheet" href="./style.css">
+     <style>
+          * {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+          }
+
+          body {
+               font-family: 'montserrat', sans-serif;
+               color: #fff;
+               height: 100vh;
+          }
+
+          .app {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+               text-align: center;
+               background: rgba(0, 0, 0, .7);
+               height: 100vh;
+          }
+
+          .header {
+               padding: 50px 20px 30px 20px;
+          }
+
+          .header h1 {
+               font-size: 50px;
+               color: #fbb034;
+               text-shadow: 1px 3px rgba(0, 0, 0, .9);
+          }
+
+          .header input {
+               width: 100%;
+               padding: 10px;
+               background: transparent;
+          }
+
+          .city {
+               font-size: 35px;
+               font-weight: 500;
+               margin-bottom: 10px;
+               text-shadow: 1px 3px rgba(0, 0, 0, .8);
+          }
+
+          .temp {
+               font-size: 100px;
+               font-weight: 700;
+               margin-bottom: 15px;
+               text-shadow: 1px 5px rgba(0, 0, 0, 1);
+          }
+
+          .error {
+               font-size: 25px;
+               margin-bottom: 15px;
+               color: crimson;
+               text-shadow: 1px 1px rgba(0, 0, 0, .8);
+          }
+
+          .desc {
+               font-size: 25px;
+               font-style: italic;
+               text-shadow: 1px 3px rgba(0, 0, 0, .8);
+               margin-bottom: 10px;
+          }
+
+          .minmax {
+               font-size: 24px;
+               text-shadow: 1px 3px rgba(0, 0, 0, .8);
+          }
+     </style>
+</head>
+
+<body>
+     <div class="app">
+          <div class="header">
+               <h1>HAVA DURUMU</h1>
+               <input type="text" id="searchBar" placeholder="Şehir Giriniz...">
+               <div class="error"></div>
+          </div>
+          <div class="content">
+               <div class="city">Istanbul, TR</div>
+               <div class="temp">15°C</div>
+               <div class="desc">Gunesli</div>
+               <div class="minmax">14°C / 19</div>
+          </div>
+     </div>
+     <script>
+          const url = 'https://api.openweathermap.org/data/2.5/';
+          const key = '70a79cc0272d98bf7df5d1109191d57b';
+
+          const setQuery = (e) => {
+               if (e.keyCode === 13) {
+                    getResult(searchBar.value);
+               }
+          };
+
+          const getResult = (cityName) => {
+               let query = `${url}weather?q=${cityName}&appid=${key}&units=metric&lang=tr`;
+               fetch(query)
+                    .then((weather) => {
+                         if (!weather.ok) {
+                              throw new Error(`Şehir bulunamadı!`);
+                         }
+                         return weather.json();
+                    })
+                    .then(displayResult)
+                    .catch((error) => {
+                         displayError(error.message);
+                    });
+          };
+
+          const displayResult = (result) => {
+               let city = document.querySelector('.city');
+               city.innerText = `${result.name}, ${result.sys.country}`;
+
+               let temp = document.querySelector('.temp');
+               temp.innerText = `${Math.round(result.main.temp)}°C`;
+
+               let desc = document.querySelector('.desc');
+               let test = result.weather[0].description.toUpperCase();
+               desc.innerText = test;
+
+               let minmax = document.querySelector('.minmax');
+               minmax.innerText = `${Math.round(result.main.temp_min)}°C / ${Math.round(
+                    result.main.temp_max
+               )}°C`;
+          };
+
+          const displayError = (message) => {
+               let error = document.querySelector('.error');
+               error.innerText = message;
+          };
+
+          const searchBar = document.getElementById('searchBar');
+          searchBar.addEventListener('keypress', setQuery);
+
+     </script>
+</body>
+
+</html>
