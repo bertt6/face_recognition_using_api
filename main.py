@@ -29,8 +29,8 @@ class FaceRecognition:
         self.encode_faces()
 
     def encode_faces(self):
-        for image in os.listdir('faces'):
-            face_image = face_recognition.load_image_file(f"faces/{image}")
+        for image in os.listdir('42API/photos'):
+            face_image = face_recognition.load_image_file(f"42API/photos/{image}")
             face_encodings = face_recognition.face_encodings(face_image)
             
             if len(face_encodings) > 0:
